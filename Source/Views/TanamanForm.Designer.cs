@@ -42,6 +42,7 @@
             this.UrlImage = new System.Windows.Forms.TextBox();
             this.Tambah = new System.Windows.Forms.Button();
             this.BrowseButton = new System.Windows.Forms.Button();
+            this.ErrorMessage = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.Picture)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Pupuk)).BeginInit();
@@ -229,12 +230,23 @@
             this.BrowseButton.UseVisualStyleBackColor = true;
             this.BrowseButton.Click += new System.EventHandler(this.BrowseButton_Click);
             // 
+            // ErrorMessage
+            // 
+            this.ErrorMessage.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.ErrorMessage.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ErrorMessage.Location = new System.Drawing.Point(12, 9);
+            this.ErrorMessage.Name = "ErrorMessage";
+            this.ErrorMessage.Size = new System.Drawing.Size(210, 216);
+            this.ErrorMessage.TabIndex = 9;
+            this.ErrorMessage.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // TanamanForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.LimeGreen;
             this.ClientSize = new System.Drawing.Size(699, 307);
+            this.Controls.Add(this.ErrorMessage);
             this.Controls.Add(this.BrowseButton);
             this.Controls.Add(this.Tambah);
             this.Controls.Add(this.UrlImage);
@@ -278,5 +290,6 @@
         private System.Windows.Forms.TextBox UrlImage;
         private System.Windows.Forms.Button Tambah;
         private System.Windows.Forms.Button BrowseButton;
+        private System.Windows.Forms.Label ErrorMessage;
     }
 }

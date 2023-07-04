@@ -1,4 +1,5 @@
 ﻿using PBO.Source.Abstracts;
+using PBO.Source.Lib;
 using PBO.Source.Lib.Tanaman;
 using System;
 using System.Collections.Generic;
@@ -28,46 +29,75 @@ namespace PBO.Source.Views
             var local = LocalImage.Text;
             var url = UrlImage.Text;
 
-            if (!String.IsNullOrEmpty(local) && !String.IsNullOrEmpty(url))
-                return; //error
-
             var isValid = true;
 
-            if(!String.IsNullOrEmpty(local))
+            if (!String.IsNullOrEmpty(local) && !String.IsNullOrEmpty(url))
+            {
+                isValid = false;
+                ErrorMessage.Text = "Cannot use both of them please choose only local or url image only";
+            }
+
+            if (isValid && !String.IsNullOrEmpty(local))
             {
                 if (File.Exists(local))
+                {
                     Picture.Image = Image.FromFile(local);
+                }
                 else
+                {
                     isValid = false;
-            }   
+                    ErrorMessage.Text = "File Does not exists";
+                }
 
-            if(!String.IsNullOrEmpty(url))
+            }
+
+            if (isValid && !String.IsNullOrEmpty(url))
             {
                 if (!Regex.IsMatch(url, @"^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$"))
-                { 
+                {
                     isValid = false;
                     return;
                 }
 
-                using (var wc = new WebClient())
+                try
                 {
-                    var bytes = wc.DownloadData(url);
+                    using (var wc = new WebClient())
+                    {
+                        var bytes = wc.DownloadData(url);
 
-                    using (var mem = new MemoryStream(bytes))
-                        Picture.Image = Image.FromStream(mem);
+                        using (var mem = new MemoryStream(bytes))
+                            Picture.Image = Image.FromStream(mem);
+                    }
                 }
+                catch (Exception e)
+                {
+                    isValid = false;
+                    ErrorMessage.Text = e.Message;
+                }
+
             }
 
-            if (!isValid) Picture.Image = Properties.Resources.flower_404;
+            if (!isValid)
+            {
+                //Picture.Image = Properties.Resources.flower_404;
+                ErrorMessage.Visible = true;
+            }
+            else
+            {
+                ErrorMessage.Visible = false;
+            }
+
         }
 
         private void Tambah_Click(object sender, EventArgs e)
         {
+            var id = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
             if (!String.IsNullOrEmpty(LocalImage.Text))
-                NewPlant = new CustomPlant(Nama.Text, (int)Air.Value, (int)Pupuk.Value, LocalImage.Text);
+                NewPlant = new CustomPlant(id, Nama.Text, (int)Air.Value, (int)Pupuk.Value, PlantImage.FromFile(LocalImage.Text));
 
             if (!String.IsNullOrEmpty(UrlImage.Text))
-                NewPlant = new CustomPlant(Nama.Text, (int)Air.Value, (int)Pupuk.Value, null, UrlImage.Text);
+                NewPlant = new CustomPlant(id, Nama.Text, (int)Air.Value, (int)Pupuk.Value, UrlImage.Text);
 
             this.Close();
         }

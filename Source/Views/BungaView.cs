@@ -17,7 +17,7 @@ namespace PBO.Source.Views
         {
             InitializeComponent();
 
-            picture.Image = plant.PlantImage;
+            picture.Image = plant.PlantImage.Image;
             nama.Text = plant.Nama;
             this.Text = $"★☆ {plant.Nama} ☆★";
         }

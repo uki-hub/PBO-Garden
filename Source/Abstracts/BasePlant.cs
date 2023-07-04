@@ -1,4 +1,6 @@
-﻿using PBO.Source.Interfaces;
+﻿using Newtonsoft.Json;
+using PBO.Source.Interfaces;
+using PBO.Source.Lib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +19,6 @@ namespace PBO.Source.Abstracts
         private int jumlahAir;
         private int jumlahPupuk;
         private bool isTumbuh;
-        private Image plantImage;
 
         public BasePlant()
         {
@@ -28,24 +29,44 @@ namespace PBO.Source.Abstracts
         }
 
         public BasePlant(
-            string nama, 
-            int jumlahAir, 
-            int jumlahPupuk, 
-            string fileImage = null,  
-            string urlImage = null) : this()
+            string id,
+            string nama,
+            int jumlahAir,
+            int jumlahPupuk,
+            string urlImage = null,
+            string base64Image = null) : this()
         {
+            ID = id;
             Nama = nama;
             JumlahAirDibutuhkan = jumlahAir;
             JumlahPupukDibutuhkan = jumlahPupuk;
 
-            if(!String.IsNullOrEmpty(fileImage)) FileImage = fileImage;
+            if (!String.IsNullOrEmpty(urlImage)) PlantImage = PlantImage.FromUrl(urlImage);
 
-            if(!String.IsNullOrEmpty(urlImage)) UrlImage = urlImage;
+            if (!String.IsNullOrEmpty(base64Image)) PlantImage = PlantImage.FromBase64(base64Image);
         }
 
+        public BasePlant(
+            string id,
+            string nama,
+            int jumlahAir,
+            int jumlahPupuk,
+            PlantImage plantImage) : this()
+        {
+            ID = id;
+            Nama = nama;
+            JumlahAirDibutuhkan = jumlahAir;
+            JumlahPupukDibutuhkan = jumlahPupuk;
+            PlantImage = plantImage;
+        }
+
+        [JsonIgnore]
         public int Air => jumlahAir;
+
+        [JsonIgnore]
         public int Pupuk => jumlahPupuk;
 
+        [JsonIgnore]
         public bool IsTumbuh
         {
             get
@@ -58,61 +79,16 @@ namespace PBO.Source.Abstracts
             }
         }
 
+        public virtual string ID { get; protected set; }
         public virtual string Nama { get; protected set; }
+
+        [JsonProperty("Air")]
         public virtual int JumlahAirDibutuhkan { get; protected set; }
+
+        [JsonProperty("Pupuk")]
         public virtual int JumlahPupukDibutuhkan { get; protected set; }
-        public virtual string FileImage { get; protected set; }
-        public virtual string UrlImage { get; protected set; }
-        public virtual Image EmbeddedImage { get; protected set; }
 
-        public Image PlantImage
-        {
-            get
-            {
-                if (plantImage != null) return plantImage;
-
-                Image image = null;
-
-                if(!string.IsNullOrEmpty(FileImage))
-                    image = Bitmap.FromFile(FileImage);
-
-                if (image == null && !string.IsNullOrEmpty(UrlImage))
-                    using(var wc = new WebClient())
-                    {
-                        var bytes = wc.DownloadData(UrlImage);
-
-                        using (var mem = new MemoryStream(bytes))
-                            image = Image.FromStream(mem);
-                    }
-
-                if (image == null)
-                    image = EmbeddedImage;
-
-                if (image == null)
-                    image = Properties.Resources.flower_404;
-
-                plantImage = image;
-
-                return image;
-            }
-        }
-
-        public string Base64Image
-        {
-            get {
-                var image = new Bitmap(PlantImage, new Size(150, 125));
-                using (MemoryStream m = new MemoryStream())
-                {
-                    image.Save(m, ImageFormat.Png);
-                    byte[] imageBytes = m.ToArray();
-
-                    // Convert byte[] to Base64 String
-                    string base64String = Convert.ToBase64String(imageBytes);
-                    return base64String;
-                }
-            }
-
-        }
+        public virtual PlantImage PlantImage { get; protected set; }
 
         public void beriAir()
         {

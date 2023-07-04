@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PBO.Source.Lib;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,15 +10,14 @@ namespace PBO.Source.Interfaces
 {
     internal interface IBasePlant
     {
+        string ID { get; }
         string Nama { get; }
 
         int JumlahAirDibutuhkan { get; }
 
         int JumlahPupukDibutuhkan { get; }
 
-        string FileImage { get; }
-        string UrlImage { get; }
-        Image EmbeddedImage { get; }
+        PlantImage PlantImage { get;  }
 
         void beriAir();
 

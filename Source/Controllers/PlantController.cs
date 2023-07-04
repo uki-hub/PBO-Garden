@@ -24,7 +24,7 @@ namespace PBO.Source.Controllers
 
         public PlantController()
         {
-            _daftarTanaman = new List<BasePlant>(tanamanDefault);
+            _daftarTanaman = new List<BasePlant>(TanamanDefault);
 
             _tanaman = new Dictionary<int, BasePlant>(9);
 
@@ -39,9 +39,7 @@ namespace PBO.Source.Controllers
 
             _tanaman[posisi] = tanaman;
 
-            var dbg = Animation.Plant(posisi, tanaman.JumlahAirDibutuhkan, tanaman.JumlahPupukDibutuhkan, tanaman.Base64Image);
-
-            tanahTanaman.NavigateToString(Animation.Plant(posisi, tanaman.JumlahAirDibutuhkan, tanaman.JumlahPupukDibutuhkan, tanaman.Base64Image));
+            tanahTanaman.NavigateToString(Animation.Plant(posisi, tanaman.JumlahAirDibutuhkan, tanaman.JumlahPupukDibutuhkan, tanaman.PlantImage.ConvertToBase64()));
 
             return true;
         }
@@ -49,6 +47,10 @@ namespace PBO.Source.Controllers
         public void Cabut(int posisi) => _tanaman[posisi] = null;
 
         public void TambahTanaman(BasePlant plant) => _daftarTanaman.Add(plant);
+
+        public void TambahTanaman(List<BasePlant> plants) => _daftarTanaman.AddRange(plants);
+
+        public void ClearTanaman() => _daftarTanaman.Clear();
 
         public void SetMode(List<WebView2> tanahTanaman, string mode) => ExecuteAllScript(tanahTanaman, $"setMode('{mode}')");
 
@@ -169,7 +171,7 @@ namespace PBO.Source.Controllers
             });
         }
 
-        private List<BasePlant> tanamanDefault => new List<BasePlant> {
+        public List<BasePlant> TanamanDefault => new List<BasePlant> {
                     new Lib.Tanaman.Cosmos(),
                     new Lib.Tanaman.Daisy(),
                     new Lib.Tanaman.Lavender(),

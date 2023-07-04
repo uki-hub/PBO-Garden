@@ -21,12 +21,13 @@ namespace PBO.Source.Lib
         public static string Plant0 = Properties.Resources.plant_0;
         public static string Plant1 = Properties.Resources.plant_1;
         public static string Plant2 = Properties.Resources.plant_2;
-        public static string Plant3 = Properties.Resources.plant_3;        
+        public static string Plant3 = Properties.Resources.plant_3;
     }
 
     internal class Animation
     {
-        public static string Plant(int posisi, int maxAir, int maxPupuk, string base64Image) {
+        public static string Plant(int posisi, int maxAir, int maxPupuk, string base64Image)
+        {
 
             return $@"
 <head>
@@ -260,13 +261,18 @@ namespace PBO.Source.Lib
     }})();
 
     document.body.onclick = () => {{
+        if(mode == 'petik') {{
+            petik();
+            return;
+        }}
+
         if(isAnimateDone == null) {{
             isAnimateDone = false;
             eval(mode)();
         }}
     }};
 </script>
-"; 
+";
         }
     }
 }

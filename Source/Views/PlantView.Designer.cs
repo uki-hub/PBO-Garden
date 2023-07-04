@@ -30,6 +30,7 @@ namespace PBO.Source.Views
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PlantView));
             this.LayoutMain = new System.Windows.Forms.TableLayoutPanel();
             this.LayoutToolbar = new System.Windows.Forms.TableLayoutPanel();
@@ -63,6 +64,7 @@ namespace PBO.Source.Views
             this.loadingLabel2 = new System.Windows.Forms.Label();
             this.loading1gif = new System.Windows.Forms.PictureBox();
             this.copyright = new System.Windows.Forms.Label();
+            this.Refresher = new System.Windows.Forms.Timer(this.components);
             this.LayoutMain.SuspendLayout();
             this.LayoutToolbar.SuspendLayout();
             this.AlatKebun.SuspendLayout();
@@ -537,6 +539,12 @@ namespace PBO.Source.Views
             this.copyright.Text = "© 2023 UKI";
             this.copyright.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
+            // Refresher
+            // 
+            this.Refresher.Enabled = true;
+            this.Refresher.Interval = 2500;
+            this.Refresher.Tick += new System.EventHandler(this.Refresher_Tick);
+            // 
             // PlantView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -608,5 +616,6 @@ namespace PBO.Source.Views
         private System.Windows.Forms.Label StatusLabel;
         private System.Windows.Forms.Button AddTumbuhan;
         private System.Windows.Forms.Label copyright;
+        private System.Windows.Forms.Timer Refresher;
     }
 }

@@ -35,8 +35,6 @@ namespace PBO.Source.Views
 
         private async void PlantView_Load(object sender, EventArgs e)
         {
-            updateStatus();
-
             tanah = new List<Panel>
             {
                 tanah1,
@@ -48,7 +46,7 @@ namespace PBO.Source.Views
                 tanah7,
                 tanah8,
                 tanah9
-            };            
+            };
 
             for (int i = 0; i < 9; i++)
             {
@@ -73,20 +71,30 @@ namespace PBO.Source.Views
                 tanah[i].DragEnter += Tanah_DragEnter;
                 tanah[i].DragDrop += Tanah_DragDrop;
             }
+
             loading2.Visible = false;
 
-            controller.Tanaman.ForEach(t => AddTanaman(t));
+            await LoadTanaman(true);
             loading1.Visible = false;
+
+            await updateStatus();
+
+            //DataAccess.PlantDataAccess.Instance.ObservePlants(p =>
+            //{
+            //    controller.TambahTanaman(p);
+            //    controller.Tanaman.ForEach(t => AddTanaman(t));
+            //    updateStatus();
+            //});
         }
 
-        private void updateStatus()
+        private async Task updateStatus()
         {
-            var isConnected = true;
+            var isConnected = await DataAccess.PlantDataAccess.Instance.IsConnected();
             var connectedString = isConnected ? "Connected" : "Disconnected";
 
             var plantCount = controller.Tanaman.Count;
 
-            StatusLabel.Text = $"📶{connectedString} | 🌱{plantCount} | ";
+            StatusLabel.Text = $"📶{connectedString} | 🌱{plantCount}";
         }
 
         private void AddTanaman(BasePlant tanaman)
@@ -104,7 +112,7 @@ namespace PBO.Source.Views
             l.Text = tanaman.Nama;
 
             var p = new PictureBox();
-            p.Image = tanaman.PlantImage;
+            p.Image = tanaman.PlantImage.Image;
             p.Margin = new System.Windows.Forms.Padding(4);
             p.Name = Guid.NewGuid().ToString();
             //p.Size = new System.Drawing.Size(160, 140);
@@ -134,7 +142,7 @@ namespace PBO.Source.Views
 
         private void Tanah_DragEnter(object sender, DragEventArgs e)
         {
-                e.Effect = DragDropEffects.All;
+            e.Effect = DragDropEffects.All;
         }
 
         private void Tanah_DragDrop(object sender, DragEventArgs e)
@@ -142,11 +150,11 @@ namespace PBO.Source.Views
             var _tanah = (Panel)sender;
             var tanaman = (BasePlant)((PictureBox)e.Data.GetData(typeof(PictureBox))).Tag;
             tanaman = (BasePlant)tanaman.Clone();
-            
+
             var posisi = Convert.ToInt32(_tanah.Tag) - 1;
             var _tanahTanaman = tanahTanaman[posisi];
 
-            _tanah.Controls.Add(tanahTanaman[posisi]); //refrenced
+            _tanah.Controls.Add(tanahTanaman[posisi]);
 
             controller.Tanam(_tanahTanaman, tanaman, posisi);
         }
@@ -187,7 +195,7 @@ namespace PBO.Source.Views
             RemoveTanaman(0);
         }
 
-        private void AddTumbuhan_Click(object sender, EventArgs e)
+        private async void AddTumbuhan_Click(object sender, EventArgs e)
         {
             using (var form = new TanamanForm())
             {
@@ -197,8 +205,29 @@ namespace PBO.Source.Views
 
                 controller.TambahTanaman(form.NewPlant);
                 AddTanaman(form.NewPlant);
-                updateStatus();
+
+                await DataAccess.PlantDataAccess.Instance.InsertPlant(form.NewPlant);
             }
+        }
+
+        private async Task LoadTanaman(bool isInital)
+        {
+            var storedTanaman = await DataAccess.PlantDataAccess.Instance.GetPlants();
+            var diff = new List<BasePlant>();
+
+            foreach (var tanaman in storedTanaman) 
+                if (!controller.Tanaman.Any(t => t.ID == tanaman.ID)) diff.Add(tanaman);
+
+            controller.TambahTanaman(diff);
+
+            if (isInital) controller.TanamanDefault.ForEach(t => AddTanaman(t));
+            diff.ForEach(t => AddTanaman(t));
+        }
+
+        private async void Refresher_Tick(object sender, EventArgs e)
+        {
+            await updateStatus();
+            await LoadTanaman(false);
         }
     }
 }
