@@ -48,7 +48,11 @@ namespace PBO.Source.DataAccess
 
         public async Task InsertPlant(BasePlant plant)
         {
-            await client.Child("plants").PostAsync(JsonConvert.SerializeObject(plant));
+            try
+            {
+                await client.Child("plants").PostAsync(JsonConvert.SerializeObject(plant));
+            }
+            catch (Exception) { }
         }
 
         public async Task<List<BasePlant>> GetPlants()

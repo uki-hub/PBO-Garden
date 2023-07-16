@@ -39,6 +39,9 @@ namespace PBO.Source.Controllers
 
             _tanaman[posisi] = tanaman;
 
+            var dbg = Animation.Plant(posisi, tanaman.JumlahAirDibutuhkan, tanaman.JumlahPupukDibutuhkan, tanaman.PlantImage.ConvertToBase64());
+
+
             tanahTanaman.NavigateToString(Animation.Plant(posisi, tanaman.JumlahAirDibutuhkan, tanaman.JumlahPupukDibutuhkan, tanaman.PlantImage.ConvertToBase64()));
 
             return true;

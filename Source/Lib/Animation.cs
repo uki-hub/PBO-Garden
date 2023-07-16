@@ -146,6 +146,7 @@ namespace PBO.Source.Lib
         _pupuk: {maxPupuk}
     }};
 
+    const statusLabel = $id('status')
     const shovel = $id('shovel');
     const plant = $id('plant');
     const water = $id('water');
@@ -185,7 +186,7 @@ namespace PBO.Source.Lib
         mode = m;
     }}
 
-    const updateStatus = () => $id('status').innerText = `🔵${{state['air']}}/${{state['_air']}} 🟤${{state['pupuk']}}/${{state['_pupuk']}}`;
+    const updateStatus = () => statusLabel.innerText = `🔵${{state['air']}}/${{state['_air']}} 🟤${{state['pupuk']}}/${{state['_pupuk']}}`;
 
     const setPlant = async (p) => {{
         plant.load(p);

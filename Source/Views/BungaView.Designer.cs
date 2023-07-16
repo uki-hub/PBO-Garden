@@ -38,9 +38,9 @@
             // 
             this.picture.BackColor = System.Drawing.Color.Transparent;
             this.picture.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.picture.Location = new System.Drawing.Point(164, 12);
+            this.picture.Location = new System.Drawing.Point(138, 12);
             this.picture.Name = "picture";
-            this.picture.Size = new System.Drawing.Size(400, 400);
+            this.picture.Size = new System.Drawing.Size(450, 400);
             this.picture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picture.TabIndex = 0;
             this.picture.TabStop = false;
@@ -84,8 +84,8 @@
             this.Controls.Add(this.title);
             this.Controls.Add(this.picture);
             this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "BungaView";

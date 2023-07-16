@@ -51,6 +51,7 @@ namespace PBO.Source.Views
             for (int i = 0; i < 9; i++)
             {
                 var w = new WebView2();
+                
                 w.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
                 w.AllowExternalDrop = false;
                 w.BackColor = System.Drawing.Color.White;
@@ -64,7 +65,8 @@ namespace PBO.Source.Views
 
                 w.WebMessageReceived += controller.OnMessageReceived(tanahTanaman, RemoveTanaman);
 
-                await w.EnsureCoreWebView2Async();
+                var env = await CoreWebView2Environment.CreateAsync(null, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TanamMenanam"));
+                await w.EnsureCoreWebView2Async(env);
 
                 tanahTanaman.Add(w);
 
@@ -100,6 +102,7 @@ namespace PBO.Source.Views
         private void AddTanaman(BasePlant tanaman)
         {
             var panel = new Panel();
+            panel.BackColor = Color.Transparent;
             panel.Size = new System.Drawing.Size(172, 140);
             panel.Padding = new Padding(4);
 
@@ -112,6 +115,7 @@ namespace PBO.Source.Views
             l.Text = tanaman.Nama;
 
             var p = new PictureBox();
+            p.BackColor = Color.Transparent;
             p.Image = tanaman.PlantImage.Image;
             p.Margin = new System.Windows.Forms.Padding(4);
             p.Name = Guid.NewGuid().ToString();
@@ -227,7 +231,25 @@ namespace PBO.Source.Views
         private async void Refresher_Tick(object sender, EventArgs e)
         {
             await updateStatus();
+        }
+
+        private void Refresh_MouseHover(object sender, EventArgs e)
+        {
+            Refresh.ForeColor = Color.MediumSeaGreen;
+        }
+
+        private void Refresh_MouseLeave(object sender, EventArgs e)
+        {
+            Refresh.ForeColor = Color.SpringGreen;
+
+        }
+
+        private async void Refresh_Click(object sender, EventArgs e)
+        {
+            StatusLabel.Text = $"{StatusLabel.Text} | Refreshing...";
             await LoadTanaman(false);
+            await updateStatus();
+
         }
     }
 }

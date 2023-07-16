@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -17,16 +18,17 @@ namespace PBO.Source.Lib
 
         public PlantImage(Image image, string urlSource = null)
         {
-            _image = image;
+            _image = ResizeImage(image);
             
             using (MemoryStream m = new MemoryStream())
             {
                 image.Save(m, ImageFormat.Png);
                 byte[] imageBytes = m.ToArray();
 
-                // Convert byte[] to Base64 String
                 string base64String = Convert.ToBase64String(imageBytes);
-                Base64 = base64String;
+                
+                if(String.IsNullOrEmpty(urlSource)) Base64 = base64String;
+                
                 Url = urlSource;
             }
         }
@@ -34,7 +36,7 @@ namespace PBO.Source.Lib
         public static PlantImage FromFile(string path)
         {
             if (File.Exists(path))
-                return new PlantImage(ResizeImage(Image.FromFile(path)));
+                return new PlantImage(Image.FromFile(path));
 
             throw new Exception("File Does not exist");
         }
@@ -48,7 +50,7 @@ namespace PBO.Source.Lib
                     var bytes = wc.DownloadData(url);
 
                     using (var mem = new MemoryStream(bytes))
-                        return new PlantImage(ResizeImage(Image.FromStream(mem)), url);
+                        return new PlantImage(Image.FromStream(mem), url);
                 }
             }
             catch (Exception e)
@@ -74,7 +76,7 @@ namespace PBO.Source.Lib
 
         public string ConvertToBase64()
         {
-            using (MemoryStream m = new MemoryStream())
+            using (var m = new MemoryStream())
             {
                 _image.Save(m, ImageFormat.Png);
                 byte[] imageBytes = m.ToArray();
@@ -85,7 +87,22 @@ namespace PBO.Source.Lib
             }
         }
 
-        private static Image ResizeImage(Image image) => new Bitmap(image, new Size(150, 125));
+        private static Image ResizeImage(Image image)
+        {
+            var b = new Bitmap(150, 125, PixelFormat.Format32bppArgb);
+
+            using (var g = Graphics.FromImage((Image)b))
+            {
+                g.SmoothingMode = SmoothingMode.HighQuality;
+                g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                g.DrawImage(image, 0, 0, 150, 125);
+            }
+
+            b.MakeTransparent();
+
+            return b;
+        }
 
     }
 }
