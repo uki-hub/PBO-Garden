@@ -38,10 +38,10 @@ namespace PBO.Source.DataAccess
         public PlantDataAccess()
         {
             client = new FirebaseClient(
-              "https://tanammenanam-b26e0-default-rtdb.asia-southeast1.firebasedatabase.app",
+              "realtime database url",
               new FirebaseOptions
               {
-                  AuthTokenAsyncFactory = () => Task.FromResult("sJ6Zf5c13ToMGp6dTh8tqbRWR8mksJq4WcuT1bB6")
+                  AuthTokenAsyncFactory = () => Task.FromResult("api key")
                   
               });
         }
