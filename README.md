@@ -2,8 +2,6 @@
 Tugas project mata kuliah Pemprograman Berorientasi Object
 Program Desktop GUI Tanam Menanam
 
-https://www.youtube.com/watch?v=UmgG-rrDeu8
-
 Runtime Screenshots:
 ![image](https://github.com/uki-hub/PBO-Garden/assets/55081130/5dfdc74d-076f-40b9-978b-9db9fd3f6275)
 
